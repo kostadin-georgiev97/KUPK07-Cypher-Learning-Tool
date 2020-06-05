@@ -1,0 +1,172 @@
+<% include partials/header-meta %>
+    <title>
+        Cypher Learning Tool |
+        <% if (exercise) { %>
+            <%= topicOrderNumber + '. ' + topicTitle + ' - Exercise ' + exercise.orderId %>
+        <% } else { %>
+            404 Exercise not found
+        <% } %>
+    </title>
+    <link rel="stylesheet" type="text/css" href="<%= rootURL %>/css/style.css">
+    <script src="https://kit.fontawesome.com/bcce239bc2.js" crossorigin="anonymous"></script>
+    <script src="<%= rootURL %>/resources/codemirror/codemirror-5.51.0/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="<%= rootURL %>/resources/codemirror/codemirror-5.51.0/lib/codemirror.css">
+    <link rel="stylesheet" href="<%= rootURL %>/resources/codemirror/codemirror-5.51.0/theme/neo.css">
+    <script src="<%= rootURL %>/resources/codemirror/codemirror-5.51.0/mode/cypher/cypher.js"></script>
+<% include partials/header-bootstrap %>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg mt-0 mb-4">
+            <a href="<%= rootURL %>/" class="navbar-brand mr-auto">
+                <img src="<%= rootURL %>/img/logo-2.png" height="80" class="d-inline-block align-top" alt="Cypher Learning Tool">
+            </a>
+            <span class="navbar-text align-bottom">logged in as <strong><%= user.username %></strong></span>
+        </nav>
+        
+        <div class="row">
+            <% if (err.type === 'exercise-unavailable') { %>
+                <div class="col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="<%= rootURL %>/topic/<%= topicOrderNumber %>"><%= topicOrderNumber + '. ' + topicTitle %></a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Exercise <%= exercise.orderId %></li>
+                        </ol>
+                    </nav>
+                    <h5><%= err.title %></h5>
+                    <hr>
+                    <p><%= err.message %></p>
+                </div>
+            <% } else { %>
+            <div class="col-12 col-md-5">
+                <h5>
+                <a href="<%= rootURL %>/topic/<%= topicOrderNumber %>"><%= topicOrderNumber + '. ' + topicTitle %></a>
+                /
+                Exercise <%= exercise.orderId %>
+                </h5>
+                <hr>
+                <h5>Data set</h5>
+                <div id="nodes">
+                    <span class="badge badge-pill badge-primary mr-2">
+                        <% var ncount = 0; %>
+                        <% labels.nodeLabels.forEach(n => { %>
+                            <% ncount += n.count %>
+                        <% }) %>
+                        *(<%= ncount %>)
+                    </span>
+                    <% labels.nodeLabels.forEach(n => { %>
+                        <span class="badge badge-pill badge-primary">
+                            <strong><%= n.label %></strong> (<%= n.count %>)
+                        </span>
+                    <% }) %>
+                </div>
+                <hr class="m-1">
+                <div class="mb-3" id="relationships">
+                    <span class="badge badge-secondary mr-2">
+                        <% var rcount = 0; %>
+                        <% labels.relationshipLabels.forEach(r => { %>
+                            <% rcount += r.count %>
+                        <% }) %>
+                        *(<%= rcount %>)
+                    </span>
+                    <% labels.relationshipLabels.forEach(r => { %>
+                        <span class="badge badge-secondary">
+                            <strong><%= r.label %></strong> (<%= r.count %>)
+                        </span>
+                    <% }) %>
+                </div>
+                <h5>Task</h5>
+                <p><%= exercise.task %></p>
+                <h5>Score</h5>
+                <span>Similarity percentage:</span>
+                <% if (similarity == -1) { %>
+                    <span class="text-danger">?</span>
+                <% } else if (similarity < 90) { %>
+                    <strong class="text-danger"><%= parseFloat(similarity).toFixed(2) %>%</strong>
+                <% } else if (similarity < 100) { %>
+                    <strong style="color: goldenrod"><%= parseFloat(similarity).toFixed(2) %>%</strong>
+                <% } else if (similarity == 100) { %>
+                    <strong class="text-success"><%= parseFloat(similarity).toFixed(2) %>%</strong>
+                <% } %>
+                <p><strong>
+                    <span id="similarity"></span>
+                </strong></p>
+                <p><strong>
+                    <% if (similarity == 100) { %>
+                        <i class="fas fa-star fa-lg text-warning mr-1 ml"></i> 2 / 2
+                    <% } else if (similarity >= 90) { %>
+                        <i class="fas fa-star-half-alt fa-lg text-warning mr-1 ml"></i> 1 / 2
+                    <% } else { %>
+                        <i class="far fa-star fa-lg text-warning mr-1 ml"></i> 0 / 2
+                    <% } %>
+                </strong></p>
+            </div>
+            <div class="col-12 col-md-7">
+                <form action="<%= rootURL %>/topic/<%= topicOrderNumber %>/exercise/<%= exercise.orderId %>/run" method="POST">
+                    <textarea class="form-control" name="query" id="query" rows="3"><%= query %></textarea>
+                    <div id="editor-footer">
+                        <button type="submit" class="btn btn-success">Run</button>
+                    </div>
+                </form>
+                <% if (err.type !== 'none') { %>
+                    <div class="alert alert-danger mt-3" role="alert">
+                        <h4 class="alert-heading"><%= err.title %></h4>
+                        <p><%= err.message %></p>
+                    </div>
+                <% } else { %>
+                    <div id="query-result" class="overflow-auto mt-3">
+                        <% if (result && result != null) { %>
+                            <% if (result.length > 0) { %>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <% result[0].keys.forEach(key => { %>
+                                            <th><%= key %></th>
+                                        <% }); %>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% result.forEach(record => { %>
+                                        <tr>
+                                            <% record._fields.forEach(field => { %>
+                                                <td>
+                                                    <% if (field && field.labels) { %>
+                                                        <%= JSON.stringify(field.labels); %>
+                                                        <pre><code><%= JSON.stringify(field.properties, null, 2) %></code></pre>
+                                                    <% } else if (field && field.type) { %>
+                                                        <%= JSON.stringify(field.type); %>
+                                                        <pre><code><%= JSON.stringify(field.properties, null, 2) %></code></pre>
+                                                    <% } else { %>
+                                                        <pre><code><%= JSON.stringify(field, null, 2) %></code></pre>
+                                                    <% } %>
+                                                </td>
+                                            <% }); %>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                            <% } else { %>
+                                <div class="ml-3 mt-3">(no changes, no records)</div>
+                                <hr>
+                            <% } %>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        var dataCodeMirror = CodeMirror.fromTextArea(document.getElementById('query'), {
+            lineWrapping: true,
+            lineNumbers: true,
+            indentWithTabs: true,
+            tabSize: 2,
+            smartIndent: false,
+            theme: 'neo'
+        });
+    </script>
+
+<% include partials/footer %>

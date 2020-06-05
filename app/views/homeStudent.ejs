@@ -1,0 +1,137 @@
+<% include partials/header-meta %>
+    <title>Cypher Learning Tool | Home</title>
+    <link rel="stylesheet" type="text/css" href="<%= rootURL %>/css/style.css">
+    <script src="https://kit.fontawesome.com/bcce239bc2.js" crossorigin="anonymous"></script>
+<% include partials/header-bootstrap %>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg mt-0 mb-4">
+            <a href="<%= rootURL %>/" class="navbar-brand mr-auto">
+                <img src="<%= rootURL %>/img/logo-2.png" height="80" class="d-inline-block align-top" alt="Cypher Learning Tool">
+            </a>
+            <span class="navbar-text align-bottom">logged in as <strong><%= user.username %></strong></span>
+        </nav>
+        <div class="row">
+
+            <% var totalScore = 0; %>
+            <% var maxPossibleScore = 0; %>
+            <% var totalProgress = 0; %>
+            <% topicScores.forEach(score => { %>
+                <% totalScore += score.totalScore; %>
+                <% maxPossibleScore += score.maxScore; %>
+                <% totalProgress += score.progress; %>
+            <% }); %>
+            <% totalProgress /= topics.records.length; %>
+
+            <!-- Student info -->
+            <div class="col-12 col-lg-3">
+                <div id="student-home-info" class="pt-2">
+                    <div class="row">
+                        <!-- Header -->
+                        <div class="col-12">
+                            <h4>Hi, <%= user.firstName %>!</h4>
+                        </div>
+                        <!-- Total points -->
+                        <div class="col-7">
+                            <p><strong>Your total points:</strong></p>
+                        </div>
+                        <div class="col-5">
+                            <p class="text-right"><strong>
+                                <i class="fas fa-star text-warning mr-1 fa-lg"></i>
+                                <%= totalScore %> / <%= maxPossibleScore %>
+                            </strong></p>
+                        </div>
+                        <!-- Progress -->
+                        <div class="col-12">
+                            <p><strong>Course progress:</strong></p>
+                        </div>
+                        <div class="col-12">
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: <%= totalProgress %>%;" aria-valuenow="<%= totalProgress %>" aria-valuemin="0" aria-valuemax="100">
+                                    <% if (totalProgress == 0) { %>
+                                        <span style="margin-left: .5rem; color: black"><%= totalProgress %> %</span>
+                                    <% } else { %>
+                                        <span><%= totalProgress.toFixed(2) %> %</span>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topics list -->
+            <div class="col-12 col-lg-9">
+                <div id="student-home-topics" class="pl-4 pr-4 pt-2">
+                    <h4 class="mb-3"><%= clas.name %></h4>
+                    
+                    <% if (topics.records.length == 0) { %>
+                    <div class="alert alert-info mt-3" id="no-topics-alert" role="alert">Topics list is empty</div>
+                    <% } else { %>
+                    <div class="wrapper">
+                        
+                        <img src="<%= rootURL %>/img/logo-transparant.png" alt="">
+
+                        <div id="topics-list" class="overflow-auto">
+                        <div class="row">
+                        
+                        <% topics.records.forEach(topic => { %>
+                            <% var topicScore; %>
+                            <% topicScores.forEach(score => { %>
+                                <% if (score.orderNumber == topic._fields[0].properties.orderNumber) { %>
+                                    <% topicScore = score; %>
+                                <% } %>
+                            <% }); %>
+                            <div class="col-12 col-md-6 col-lg-6 mb-3 pl-2 pr-2">
+                                <div class="student-home-topic m-0">
+                                    <h5>
+                                        <a href="<%= rootURL %>/topic/<%= topic._fields[0].properties.orderNumber %>">
+                                            <%= topic._fields[0].properties.orderNumber %>.
+                                            <%= topic._fields[0].properties.title %>
+                                        </a>
+                                    </h5>
+                                    <!-- Topic progress -->
+                                    <div class="row">
+                                        <div class="col-12 col-md-3 col-lg-5">
+                                            <h6>Topic progress:</h6>
+                                        </div>
+                                        <div class="col-12 col-md-9 col-lg-7">
+                                            <div class="progress ml-auto mb-3">
+                                                <div class="progress-bar" role="progressbar" style="width: <%= topicScore.progress %>%;" aria-valuenow="<%= topicScore.progress %>" aria-valuemin="0" aria-valuemax="100">
+                                                    <% if (topicScore.progress == 0) { %>
+                                                        <span style="margin-left: .5rem; color: black"><%= topicScore.progress %> %</span>
+                                                    <% } else { %>
+                                                        <span><%= topicScore.progress.toFixed(2) %> %</span>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Topic score -->
+                                    <div class="row">
+                                        <div class="col-2 col-md-3 col-lg-2">
+                                            <h6>Score:</h6>
+                                        </div>
+                                        <div class="col-10 col-md-9 col-lg-10">
+                                            <strong>
+                                                <i class="fas fa-star text-warning mr-1"></i>
+                                                <%= topicScore.totalScore %> / <%= topicScore.maxScore %>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        <% }); %>
+                        
+                        </div>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+<% include partials/footer %>

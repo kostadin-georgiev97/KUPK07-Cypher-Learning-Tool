@@ -1,0 +1,143 @@
+<% include partials/header-meta %>
+    <title>
+        Cypher Learning Tool |
+        <% if (topic.records.length != 0) { %>
+            <%= topic.records[0]._fields[0].properties.title %>
+        <% } else { %>
+            404 Topic not found
+        <% } %>
+    </title>
+    <link rel="stylesheet" type="text/css" href="<%= rootURL %>/css/style.css">
+    <script src="https://kit.fontawesome.com/bcce239bc2.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/highlightjs-cypher/dist/cypher.min.js"></script>
+<% include partials/header-bootstrap %>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg mt-0 mb-4">
+            <a href="<%= rootURL %>/" class="navbar-brand mr-auto">
+                <img src="<%= rootURL %>/img/logo-2.png" height="80" class="d-inline-block align-top" alt="Cypher Learning Tool">
+            </a>
+            <span class="navbar-text align-bottom">logged in as <strong><%= user.username %></strong></span>
+        </nav>
+        <div class="row">
+            <% if (topic.records.length != 0) { %>
+                <div class="col-12 mb-5">
+                    <!-- Topic title -->
+                    <div id="topic-header">
+                        <h4 class="mb-4">
+                            <%= topic.records[0]._fields[0].properties.orderNumber %>.
+                            <%= topic.records[0]._fields[0].properties.title %>
+                        </h4>
+                        <div class="row">
+                            <div class="col-12 col-md-3 col-lg-2">
+                                <h6>Topic progress:</h6>
+                            </div>
+                            <div class="col-12 col-md-9 col-lg-10">
+                                <div class="progress ml-auto mb-3">
+                                    <div class="progress-bar" role="progressbar" style="width: <%= topicProgress %>%;" aria-valuenow="<%= topicProgress %>" aria-valuemin="0" aria-valuemax="100">
+                                        <%= topicProgress %>%
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-2 col-md-3 col-lg-2">
+                                <h6>Score:</h6>
+                            </div>
+                            <div class="col-10 col-md-9 col-lg-10">
+                                <strong><i class="fas fa-star text-warning mr-1 fa-lg"></i>
+                                    <%= topicScore %> / <%= exercises.records.length * 2 %>
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <ul class="nav nav-tabs mt-3" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="topic-content-tab" data-toggle="tab" href="#topic-content" role="tab" aria-controls="topic-content" aria-selected="true">
+                                Topic
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="topic-exercises-tab" data-toggle="tab" href="#topic-exercises" role="tab" aria-controls="topic-exercises" aria-selected="false">
+                                Exercises
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <!-- Topic content -->
+                        <div class="tab-pane fade show active pt-4" id="topic-content" role="tabpanel" aria-labelledby="topic-content-tab">
+                            <%- topic.records[0]._fields[0].properties.content %>
+                        </div>
+                        <!-- Exercises -->
+                        <div class="tab-pane fade pt-4" id="topic-exercises" role="tabpanel" aria-labelledby="topic-exercises-tab">
+
+                            <ul style="list-style: none;">
+                                <% if (exercises.records.length != 0) { %>
+                                    <% exercises.records.forEach(exercise => { %>
+                                        <li class="mt-2 mb-3">
+                                            <i class="far fa-file-code fa-lg mr-3"></i>
+                                            <a href="<%= rootURL %>/topic/<%= topic.records[0]._fields[0].properties.orderNumber %>/exercise/<%= exercise._fields[0].properties.orderId %>" class="mr-5">
+                                                Exercise <%= exercise._fields[0].properties.orderId %>
+                                            </a>
+
+                                            <% var isAtempted = false; %>
+                                            <% var score = 0; %>
+                                            <% var similarity = 0; %>
+                                            <% attempts.records.forEach(attempt => { %>
+                                                <% let a = attempt.toObject(); %>
+                                                <% if (parseInt(a.id) == parseInt(exercise._fields[0].properties.orderId)) { %>
+                                                    <% isAtempted = true; %>
+                                                    <% score = parseInt(a.score); %>
+                                                    <% similarity = parseFloat(a.similarity).toFixed(2); %>
+                                                <% } %>
+                                            <% }); %>
+                                            <% if (!isAtempted) { %>
+                                                <strong class="text-danger">No attempt yet!</strong>
+                                            <% } else { %>
+                                                <% if (score == 0) { %>
+                                                    <strong><i class="far fa-star text-warning mr-1"></i> 0 / 2</strong>
+                                                <% } else if (score == 1) { %>
+                                                    <strong><i class="fas fa-star-half-alt text-warning mr-1"></i> 1 / 2</strong>
+                                                <% } else if (score == 2) { %>
+                                                    <strong><i class="fas fa-star text-warning mr-1"></i> 2 / 2</strong>
+                                                <% } %>
+                                                <span class="ml-4">Similarity:</span>
+                                                <% if (similarity < 90) { %>
+                                                    <strong class="text-danger"><%= similarity %>%</strong>
+                                                <% } else if (similarity < 100) { %>
+                                                    <strong style="color: goldenrod"><%= similarity %>%</strong>
+                                                <% } else if (similarity == 100) { %>
+                                                    <strong class="text-success"><%= similarity %>%</strong>
+                                                <% } %>
+                                            <% } %>
+                                            
+                                        </li>
+                                    <% }); %>
+                                <% } else { %>
+                                    no exercises
+                                <% } %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="col-12">
+                    <h4>404 Topic not found</h4>
+                    <hr>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightBlock(block);
+            
+        });
+    </script>
+
+<% include partials/footer %>

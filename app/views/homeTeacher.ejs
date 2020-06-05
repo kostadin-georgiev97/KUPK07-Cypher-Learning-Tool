@@ -1,0 +1,270 @@
+<% include partials/header-meta %>
+    <title>Cypher Learning Tool | Home</title>
+    <link rel="stylesheet" type="text/css" href="<%= rootURL %>/css/style.css">
+    <script src="https://kit.fontawesome.com/bcce239bc2.js" crossorigin="anonymous"></script>
+<% include partials/header-bootstrap %>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg mt-0 mb-4">
+            <a href="<%= rootURL %>/" class="navbar-brand mr-auto">
+                <img src="<%= rootURL %>/img/logo-2.png" height="80" class="d-inline-block align-top" alt="Cypher Learning Tool">
+            </a>
+            <span class="navbar-text align-bottom">logged in as <strong><%= user.username %></strong></span>
+        </nav>
+        <% if (locals.errorMessage) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= locals.errorMessage %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true" onclick="window.location.replace('<%= rootURL %>/')">&times;</span>
+                </button>
+              </div>
+        <% } %>
+        <div class="row">
+            <!-- Class info -->
+            <div class="col-12 col-md-6">
+                <!-- Class name -->
+                <h4><%= clas.name %></h4>
+                
+                <!-- Topics list -->
+                <ul class="list-group mt-3 topics">
+                <% if (topics.records.length == 0) { %>
+                    <div class="alert alert-info mt-3" id="no-topics-alert" role="alert">Topics list is empty</div>
+                <% } else { %>
+                <% topics.records.forEach(topic => { %>
+                    <li class="list-group-item mb-2" data-clas="<%= clas.name %>" data-title="<%= topic._fields[0].properties.title %>" data-position="<%= topic._fields[0].properties.orderNumber %>">
+                        <div class="row">
+                            <div class="col-1">
+                                <i class="fas fa-bars fa-lg align-middle handle"></i>
+                            </div>
+                            <div class="col-8 col-md-9">
+                                <div class="topic-title">
+                                    <input type="text" class="form-control form-control-sm">
+                                    <h5 class="align-middle">
+                                        <span><%= topic._fields[0].properties.orderNumber %></span>.
+                                        <a href="<%= rootURL %>/topic/<%= topic._fields[0].properties.orderNumber %>"><%= topic._fields[0].properties.title %></a>
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="col-1">
+                                <i class="fas fa-pen align-middle text-primary edit-topic"></i>
+                            </div>
+                            <div class="col-1">
+                                <i class="far fa-trash-alt align-middle text-danger delete-topic" data-clas="<%= clas.name %>" data-topic-title="<%= topic._fields[0].properties.title %>"></i>
+                            </div>
+                        </div>
+                    </li>
+                <% }); } %>
+                </ul>
+                <!-- Add new topic -->
+                <form action="<%= rootURL %>/topic" method="POST">
+                    <div class="form-group">
+                        <div class="input-group mt-2">
+                            <div class="input-group-prepend">
+                                <button type="submit" class="btn btn-outline-success" id="add-topic">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Add
+                                </button>
+                            </div>
+                            <input type="hidden" name="clas" value="<%= clas.name %>">
+                            <input type="text" id="new-topic-name" name="newTopicName" class="form-control" placeholder="Topic name..." aria-label="" aria-describedby="add-topic" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Students info -->
+            <div class="col-12 col-md-6 mt-5 mb-5 mt-md-0 mb-md-0">
+                <!-- Search Students -->
+                <h4>Students</h4>
+                <form action="<%= rootURL %>/students" class="mt-3 mb-4" method="GET">
+                    <div class="input-group">
+                        <input type="search" class="form-control" name="regNumber" placeholder="Search by reg number" aria-label="Search" aria-describedby="search-student" pattern="\d*" required>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-dark pl-5 pr-5" id="search-student">Search</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <!-- View All Students -->
+                        <a href="<%= rootURL %>/students" class="btn btn-outline-primary btn-block mb-4">View All Students</a>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <!-- Delete All Students -->
+                        <form action="<%= rootURL %>/students?_method=DELETE" class="form-inline mb-4" method="POST">
+                            <input type="hidden" name="className" value="<%= clas.name %>">
+                            <button type="submit" class="btn btn-outline-danger btn-block">Delete All Students</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Import Students -->
+                <h4>Import Students</h4>
+                <form action="<%= rootURL %>/import-students" class="mt-3 mb-4" method="POST" enctype="multipart/form-data">
+                    <div class="input-group mb-3">
+                        <div class="custom-file">
+                            <input type="file" name="studentsImport" class="custom-file-input" id="studentsImport" aria-describedby="submitStudentsCsv" accept=".csv" required>
+                            <label class="custom-file-label" for="studentsImport">Choose file (.csv)</label>
+                        </div>
+                        <input type="hidden" name="clas" value="<%= clas.name %>">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="submit" id="submitStudentsCsv">Import</button>
+                        </div>
+                    </div>
+                    <span id="studentsImportHelp" class="form-text text-muted">
+                        File requirements:
+                    </span>
+                    <ul class="form-text text-muted">
+                        <li>Header: <strong>dsUsername</strong>, <strong>registrationNumber</strong>, <strong>firstName</strong>, <strong>lastName</strong>.</li>
+                        <li>Uses ',' (comma) as a delimiter</li>
+                        <li>Must have at least one student record.</li>
+                        <li>Must not contain duplicate records (on username or reg. number) or records that are already in the system.</li>
+                    </ul class="form-text text-muted">
+                </form>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            
+            $(".topics").sortable({
+                update: function(event, ui) {
+                    updateTopicsOrder();
+                },
+                handle: '.handle',
+                placeholder: 'sortable-placeholder'
+            });
+
+            $('.delete-topic').on('click', function() {
+                let topic = $(this).closest('.list-group-item');
+                let className = $(this).attr('data-clas');
+                let topicTitle = $(this).attr('data-topic-title');
+                
+                $.ajax({
+                    url: '<%= rootURL %>/topic',
+                    method: 'DELETE',
+                    dataType: 'text',
+                    data: {
+                        className: className,
+                        topicTitle: topicTitle
+                    }, success: function(res) {
+                        topic.remove();
+                        updateTopicsOrder();
+                        if ($(".topics").children().length == 0) {
+                            $(".topics").before('<div class="alert alert-info mt-3" id="no-topics-alert" role="alert">Topics list is empty</div>');
+                        }
+                    }, error: function(res) {
+                        console.log(res);
+                    }
+                });
+            });
+
+            function updateTopicsOrder() {
+                $(".topics").children().each(function(index) {
+                    if ($(this).attr('data-position') != (index + 1)) {
+                        $(this).attr('data-position', (index + 1)).addClass('updated');
+                        $(this).find('span').html(index + 1);
+                    }
+                });
+                updateDataPosition();
+            }
+
+            function updateDataPosition() {
+                var positions = [];
+                $('.updated').each(function() {
+                    positions.push({
+                        className: $(this).attr('data-clas'),
+                        topicTitle: $(this).attr('data-title'),
+                        newPosition: parseInt($(this).attr('data-position'))
+                    });
+                    $(this).removeClass('updated');
+                });
+                $(".topics").sortable("disable");
+                $.ajax({
+                    url: '<%= rootURL %>/topics-reorder',
+                    method: 'POST',
+                    dataType: 'text',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        positions: positions
+                    }), success: function(res) {
+                        $(".topics").sortable("enable");
+                    }, error: function(res) {
+                        console.log(res);
+                    }
+                });
+            }
+
+            $('.edit-topic').on('click', function() {
+                let topicTitle = $(this).closest('.list-group-item').find('.topic-title');
+                topicTitle.find('input').toggle().val(topicTitle.find('a').html()).focus();
+                topicTitle.find('h5').toggle();
+            });
+            $('.topic-title').on('dblclick', function() {
+                $(this).find('input').toggle().val($(this).find('a').html()).focus();
+                $(this).find('h5').toggle();
+            });
+            $('.topic-title').on('keydown blur dblclick', 'input', function(event) {
+                if (event.type == "keydown") {
+                    if (event.which == 13) {
+                        let topic = $(this).closest('.list-group-item');
+                        updateTopicTitle(topic);
+                    }
+                    if (event.which == 38 || event.which == 40 || event.which == 37 || event.which == 39 || event.keyCode == 32) {
+                        event.stopPropagation();
+                    }
+                } else if (event.type == "focusout") {
+                    if ($(this).css('display') == "inline-block") {
+                        let topic = $(this).closest('.list-group-item');
+                        updateTopicTitle(topic);
+                    }
+                } else {
+                    event.stopPropagation();
+                }
+            });
+
+            function updateTopicTitle(topic) {
+                let oldTitle = topic.attr('data-title');
+                let newTitle = topic.find('input').val().trim();
+
+                if (oldTitle !== newTitle) {
+                    let clas = topic.attr('data-clas');
+
+                    $.ajax({
+                        url: '<%= rootURL %>/topic',
+                        method: 'PUT',
+                        dataType: 'json',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({
+                            className: clas,
+                            topicTitle: oldTitle,
+                            newTopicTitle: newTitle
+                        }), success: function(res) {
+                            topic.attr('data-title', newTitle);
+                            let input = topic.find('input');
+                            input.toggle();
+                            input.siblings('h5').toggle();
+                            input.siblings('h5').find('a').html(newTitle);
+                        }, error: function(err) {
+                            let input = topic.find('input');
+                            input.toggle();
+                            input.siblings('h5').toggle();
+                            input.siblings('h5').find('a').html(oldTitle);
+                            if (typeof err.responseJSON !== typeof undefined) {
+                                if (err.responseJSON.code === "UniqueConstraintViolation") {
+                                    window.location.replace('<%= rootURL %>/err/There is already a topic with name "' + newTitle + '"');
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    let input = topic.find('input');
+                    input.toggle();
+                    input.siblings('h5').toggle();
+                    input.siblings('h5').find('a').html(oldTitle);
+                }
+            }
+        });
+    </script>
+
+<% include partials/footer %>

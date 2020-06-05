@@ -1,0 +1,47 @@
+<% include partials/header-meta %>
+    <title>
+        Cypher Learning Tool | Student Record -
+        <% if (student.records.length != 0) { %>
+            <%= student.records[0]._fields[0].properties.regNumber %>
+        <% } else { %>
+            404 Student not found
+        <% } %>
+    </title>
+    <link rel="stylesheet" type="text/css" href="<%= rootURL %>/css/style.css">
+    <script src="https://kit.fontawesome.com/bcce239bc2.js" crossorigin="anonymous"></script>
+<% include partials/header-bootstrap %>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg mt-0 mb-4">
+            <a href="<%= rootURL %>/" class="navbar-brand mr-auto">
+                <img src="<%= rootURL %>/img/logo-2.png" height="80" class="d-inline-block align-top" alt="Cypher Learning Tool">
+            </a>
+            <span class="navbar-text align-bottom">logged in as <strong><%= user.username %></strong></span>
+        </nav>
+        <div class="row">
+            <% if (student.records.length != 0) { %>
+                <div class="col-12">
+                    <h4>
+                        <%= student.records[0]._fields[0].properties.firstName %>
+                        <%= student.records[0]._fields[0].properties.lastName %>
+                    </h4>
+                    <hr>
+                    <p>
+                        DS username:
+                        <strong><%= student.records[0]._fields[0].properties.username %></strong>
+                    </p>
+                    <p>
+                        Registration number:
+                        <strong><%= student.records[0]._fields[0].properties.regNumber %></strong>
+                    </p>
+                </div>
+            <% } else { %>
+                <div class="col-12">
+                    <h4>404 Student not found</h4>
+                    <hr>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+<% include partials/footer %>

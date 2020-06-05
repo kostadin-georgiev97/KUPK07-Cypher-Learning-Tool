@@ -1,0 +1,82 @@
+<% include partials/header-meta %>
+    <title>
+        Cypher Learning Tool |
+        <% if (exercise) { %>
+            <%= topicOrderNumber + '. ' + topicTitle + ' - Exercise ' + exercise.orderId %>
+        <% } else { %>
+            404 Exercise not found
+        <% } %>
+    </title>
+    <link rel="stylesheet" type="text/css" href="<%= rootURL %>/css/style.css">
+    <script src="https://kit.fontawesome.com/bcce239bc2.js" crossorigin="anonymous"></script>
+    <script src="<%= rootURL %>/resources/codemirror/codemirror-5.51.0/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="<%= rootURL %>/resources/codemirror/codemirror-5.51.0/lib/codemirror.css">
+    <link rel="stylesheet" href="<%= rootURL %>/resources/codemirror/codemirror-5.51.0/theme/neo.css">
+    <script src="<%= rootURL %>/resources/codemirror/codemirror-5.51.0/mode/cypher/cypher.js"></script>
+<% include partials/header-bootstrap %>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg mt-0 mb-4">
+            <a href="<%= rootURL %>/" class="navbar-brand mr-auto">
+                <img src="<%= rootURL %>/img/logo-2.png" height="80" class="d-inline-block align-top" alt="Cypher Learning Tool">
+            </a>
+            <span class="navbar-text align-bottom">logged in as <strong><%= user.username %></strong></span>
+        </nav>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="<%= rootURL %>/topic/<%= topicOrderNumber %>"><%= topicOrderNumber + '. ' + topicTitle %></a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Exercise <%= exercise.orderId %></li>
+            </ol>
+        </nav>
+        <div class="row">
+            <div class="col-6">
+                <form action="<%= rootURL %>/topic/<%= topicOrderNumber %>/exercise/<%= exercise.orderId %>/data?_method=PUT" method="POST">
+                    <div class="form-group">
+                        <label for="data">Data</label>
+                        <textarea class="form-control" name="data" id="data" rows="3"><%= exercise.data %></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update data</button>
+                </form>
+            </div>
+            <div class="col-6">
+                <form action="<%= rootURL %>/topic/<%= topicOrderNumber %>/exercise/<%= exercise.orderId %>/task?_method=PUT" method="POST">
+                    <div class="form-group">
+                        <label for="task">Task</label>
+                        <textarea class="form-control" name="task" id="task" rows="3"><%= exercise.task %></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update task</button>
+                </form>
+                <form action="<%= rootURL %>/topic/<%= topicOrderNumber %>/exercise/<%= exercise.orderId %>/solution?_method=PUT" method="POST">
+                    <div class="form-group">
+                        <label for="solution">Solution</label>
+                        <textarea class="form-control" name="solution" id="solution" rows="3"><%= exercise.solution %></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update solution</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var dataCodeMirror = CodeMirror.fromTextArea(document.getElementById('data'), {
+            lineWrapping: true,
+            lineNumbers: true,
+            indentWithTabs: true,
+            tabSize: 2,
+            smartIndent: false,
+            theme: 'neo'
+        });
+        var solutionCodeMirror = CodeMirror.fromTextArea(document.getElementById('solution'), {
+            lineWrapping: true,
+            lineNumbers: true,
+            indentWithTabs: true,
+            tabSize: 2,
+            smartIndent: false,
+            theme: 'neo'
+        });
+    
+    </script>
+
+<% include partials/footer %>

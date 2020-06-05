@@ -1,0 +1,165 @@
+<% include partials/header-meta %>
+    <title>Cypher Learning Tool | All Students</title>
+    <link rel="stylesheet" type="text/css" href="<%= rootURL %>/css/style.css">
+    <script src="https://kit.fontawesome.com/bcce239bc2.js" crossorigin="anonymous"></script>
+<% include partials/header-bootstrap %>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg mt-0 mb-4">
+            <a href="<%= rootURL %>/" class="navbar-brand mr-auto">
+                <img src="<%= rootURL %>/img/logo-2.png" height="80" class="d-inline-block align-top" alt="Cypher Learning Tool">
+            </a>
+            <span class="navbar-text align-bottom">logged in as <strong><%= user.username %></strong></span>
+        </nav>
+        <div class="row">
+            <div class="col-12">
+                <% if (isSearch) { %>
+                    <h4>Search results for: '<%= searchQuery.padEnd(9, '*') %>'</h4>
+                    <% if (students.length == 0) { %>
+                        <p>0 student records were found</p>
+                        <hr>
+                        <div class="alert alert-warning mt-3" id="no-students-alert" role="alert">There are no matching results!</div>
+                    <% } else { %>
+                        <p><%= students.length %> student records were found</p>
+                        <table class="table table-striped table-hover table-responsive-md mt-3" id="all-students-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:12.5%">DS username</th>
+                                    <th style="width:17.5%">Registration number</th>
+                                    <th style="width:15%">First name</th>
+                                    <th style="width:15%">Last name</th>
+                                    <th>Progress</th>
+                                    <th class="text-center" style="width:10%">Total Score</th>
+                                    <th style="width:6%"></th>
+                                    <th style="width:6%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% students.forEach(student => { %>
+                                    <% var totalScore = 0; %>
+                                    <% var maxPossibleScore = 0; %>
+                                    <% var totalProgress = 0; %>
+                                    
+                                    <% scores.forEach(s => { %>
+                                        <% if (s.student === student._fields[0].properties.username) { %>
+                                            <% s.scores.forEach(score => { %>
+                                                <% totalScore += score.totalScore; %>
+                                                <% maxPossibleScore += score.maxScore; %>
+                                                <% totalProgress += score.progress; %>
+                                            <% }); %>
+                                            <% totalProgress /= s.scores.length; %>
+                                        <% } %>
+                                    <% }); %>
+                                    <tr>
+                                        <td><%= student._fields[0].properties.username %></td>
+                                        <td><%= student._fields[0].properties.regNumber %></td>
+                                        <td><%= student._fields[0].properties.firstName %></td>
+                                        <td><%= student._fields[0].properties.lastName %></td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: <%= totalProgress %>%;" aria-valuenow="<%= totalProgress %>" aria-valuemin="0" aria-valuemax="100">
+                                                    <% if (totalProgress == 0) { %>
+                                                        <span style="margin-left: .5rem; color: black"><%= totalProgress %> %</span>
+                                                    <% } else { %>
+                                                        <span><%= totalProgress.toFixed(2) %> %</span>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <i class="fas fa-star text-warning mr-1"></i>
+                                            <%= totalScore %> / <%= maxPossibleScore %>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="<%= rootURL %>/student/<%= student._fields[0].properties.regNumber %> %>">
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <form action="<%= rootURL %>/student/<%= student._fields[0].properties.regNumber %>?_method=DELETE" method="POST">
+                                                <input type="hidden" name="searchQuery" value="<%= searchQuery %>">
+                                                <button type="submit" class="far fa-trash-alt text-danger" style="border:none;background:none"></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    <% } %>
+
+                <% } else { %>
+                    <h4>All Students</h4>
+                    <p>Number of student records: <%= students.length %></p>
+                    <% if (students.length == 0) { %>
+                        <hr>
+                        <div class="alert alert-warning mt-3" id="no-students-alert" role="alert">There are no students enrolled in this class.</div>
+                    <% } else { %>
+                        <table class="table table-striped table-hover table-responsive-md mt-3" id="all-students-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:12.5%">DS username</th>
+                                    <th style="width:17.5%">Registration number</th>
+                                    <th style="width:15%">First name</th>
+                                    <th style="width:15%">Last name</th>
+                                    <th>Progress</th>
+                                    <th class="text-center" style="width:10%">Total Score</th>
+                                    <th style="width:6%"></th>
+                                    <th style="width:6%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% students.forEach(student => { %>
+                                    <% var totalScore = 0; %>
+                                    <% var maxPossibleScore = 0; %>
+                                    <% var totalProgress = 0; %>
+                                    
+                                    <% scores.forEach(s => { %>
+                                        <% if (s.student === student._fields[0].properties.username) { %>
+                                            <% s.scores.forEach(score => { %>
+                                                <% totalScore += score.totalScore; %>
+                                                <% maxPossibleScore += score.maxScore; %>
+                                                <% totalProgress += score.progress; %>
+                                            <% }); %>
+                                            <% totalProgress /= s.scores.length; %>
+                                        <% } %>
+                                    <% }); %>
+                                    <tr>
+                                        <td><%= student._fields[0].properties.username %></td>
+                                        <td><%= student._fields[0].properties.regNumber %></td>
+                                        <td><%= student._fields[0].properties.firstName %></td>
+                                        <td><%= student._fields[0].properties.lastName %></td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: <%= totalProgress %>%;" aria-valuenow="<%= totalProgress %>" aria-valuemin="0" aria-valuemax="100">
+                                                    <% if (totalProgress == 0) { %>
+                                                        <span style="margin-left: .5rem; color: black"><%= totalProgress %> %</span>
+                                                    <% } else { %>
+                                                        <span><%= totalProgress.toFixed(2) %> %</span>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <i class="fas fa-star text-warning mr-1"></i>
+                                            <%= totalScore %> / <%= maxPossibleScore %>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="<%= rootURL %>/student/<%= student._fields[0].properties.regNumber %>">
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <form action="<%= rootURL %>/student/<%= student._fields[0].properties.regNumber %>?_method=DELETE" method="POST">
+                                                <button type="submit" class="far fa-trash-alt text-danger" style="border:none;background:none"></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+
+<% include partials/footer %>
