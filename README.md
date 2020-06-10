@@ -7,12 +7,12 @@ Prerequisites:
 *  Create new Graph and have it run on bolt://localhost:7687.
 
 # Screenshots
-[Shibboleth authentication](public/img/1_log_in.png)
-[Shibboleth authentication](public/img/2_home_student.png)
-[Shibboleth authentication](public/img/2_home_teacher.png)
-[Shibboleth authentication](public/img/3_exercise_error.png)
-[Shibboleth authentication](public/img/4_exercise_result.png)
-[Shibboleth authentication](public/img/5_exercise.png)
+![Shibboleth authentication](public/img/1_log_in.png)
+![Student Homepage](public/img/2_home_student.png)
+![Teacher Homepage](public/img/2_home_teacher.png)
+![Exercise Throws Error](public/img/3_exercise_error.png)
+![Exercise Returns Result](public/img/4_exercise_result.png)
+![Exercise](public/img/5_exercise.png)
 
 # To build the project:
 1.  Navigate to the project root directory and open a shell.
