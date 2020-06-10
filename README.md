@@ -7,6 +7,7 @@ Prerequisites:
 *  Create new Graph and have it run on bolt://localhost:7687.
 
 # Screenshots
+<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%">
 ![Shibboleth authentication](public/img/1_log_in.png | width=40%)
 ![Student Homepage](public/img/2_home_student.png)
 ![Teacher Homepage](public/img/2_home_teacher.png)
