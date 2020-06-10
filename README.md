@@ -7,7 +7,12 @@ Prerequisites:
 *  Create new Graph and have it run on bolt://localhost:7687.
 
 # Screenshots
-<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%">
+<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="left" style="border: 1px solid grey">
+<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="right" style="border: 1px solid grey">
+<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="left" style="border: 1px solid grey">
+<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="right" style="border: 1px solid grey">
+<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="left" style="border: 1px solid grey">
+<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="right" style="border: 1px solid grey">
 ![Shibboleth authentication](public/img/1_log_in.png | width=40%)
 ![Student Homepage](public/img/2_home_student.png)
 ![Teacher Homepage](public/img/2_home_teacher.png)
