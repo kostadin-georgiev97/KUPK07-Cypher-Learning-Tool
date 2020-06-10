@@ -22,7 +22,9 @@ Prerequisites:
 
 | | |
 |-|-|
-| ##Shibboleth authentication
-<img src="public/img/1_log_in.png" alt="Shibboleth authentication"> | <img src="public/img/2_home_student.png" alt="Student Homepage"> |
+| ## Shibboleth authentication
+<img src="public/img/1_log_in.png" alt="Shibboleth authentication"> 
+| ## Student Homepage
+<img src="public/img/2_home_student.png" alt="Student Homepage"> |
 | <img src="public/img/2_home_teacher.png" alt="Teacher Homepage"> | <img src="public/img/3_exercise_error.png" alt="Exercise Throws Error"> |
 | <img src="public/img/4_exercise_result.png" alt="Exercise Returns Result"> | <img src="public/img/5_exercise.png" alt="Exercise"> |
