@@ -7,18 +7,12 @@ Prerequisites:
 *  Create new Graph and have it run on bolt://localhost:7687.
 
 # Screenshots
-<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="left" style="border: 1px solid grey">
-<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="right" style="border: 1px solid grey">
-<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="left" style="border: 1px solid grey">
-<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="right" style="border: 1px solid grey">
-<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="left" style="border: 1px solid grey">
-<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="right" style="border: 1px solid grey">
-![Shibboleth authentication](public/img/1_log_in.png | width=40%)
-![Student Homepage](public/img/2_home_student.png)
-![Teacher Homepage](public/img/2_home_teacher.png)
-![Exercise Throws Error](public/img/3_exercise_error.png)
-![Exercise Returns Result](public/img/4_exercise_result.png)
-![Exercise](public/img/5_exercise.png)
+<img src="public/img/1_log_in.png" alt="Shibboleth authentication" width="40%" align="left">
+<img src="public/img/2_home_student.png" alt="Student Homepage" width="40%" align="right">
+<img src="public/img/2_home_teacher.png" alt="Teacher Homepage" width="40%" align="left">
+<img src="public/img/3_exercise_error.png" alt="Exercise Throws Error" width="40%" align="right">
+<img src="public/img/4_exercise_result.png" alt="Exercise Returns Result" width="40%" align="left">
+<img src="public/img/5_exercise.png" alt="Exercise" width="40%" align="right">
 
 # To build the project:
 1.  Navigate to the project root directory and open a shell.
