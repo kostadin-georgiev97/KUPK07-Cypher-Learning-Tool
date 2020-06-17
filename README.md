@@ -3,6 +3,9 @@
 ### Summary
 This project aims to produce software that supports the teaching of Neo4j (the leading graph database) and the standard query language for it - Cypher, in an interactive manner. The project will accommodate both students' and teacher's needs.
 
+Detailed documentation can be found here: 
+https://www.academia.edu/43367988/Cypher_Learning_Tool?source=swp_share
+
 ### Prerequisites:
 *  Have Node.js and NPM installed.
 *  Have Neo4j Desktop installed on localhost.
